@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TadidyVeGame.ViewModels"
+             x:Class="TadidyVeGame.Views.RegisterView"
+             x:DataType="vm:RegisterViewModel">
+    <Grid Background="#2c3e50" ShowGridLines="False">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="380" Spacing="20">
+            <TextBlock Text="INSCRIPTION" FontSize="32" FontWeight="Bold" Foreground="#ecf0f1" HorizontalAlignment="Center"/>
+            
+            <Border Background="#34495e" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Nom d'utilisateur" Foreground="#bdc3c7" FontSize="14"/>
+                    <TextBox Text="{Binding Username}" Background="#2c3e50" Foreground="#ecf0f1" 
+                             Padding="12" CornerRadius="4" Height="40" FontSize="14"/>
+                    
+                    <TextBlock Text="Mot de passe" Foreground="#bdc3c7" FontSize="14"/>
+                    <TextBox Text="{Binding Password}" Background="#2c3e50" Foreground="#ecf0f1" 
+                             Padding="12" CornerRadius="4" Height="40" FontSize="14"/>
+                    
+                    <Button Content="S'inscrire" Background="#27ae60" Foreground="White" 
+                            Height="45" FontSize="16" FontWeight="Bold" CornerRadius="4"
+                            Command="{Binding RegisterCommand}" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

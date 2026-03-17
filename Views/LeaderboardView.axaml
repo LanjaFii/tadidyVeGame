@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TadidyVeGame.ViewModels"
+             x:Class="TadidyVeGame.Views.LeaderboardView"
+             x:DataType="vm:LeaderboardViewModel">
+    <Grid Background="#2c3e50" ShowGridLines="False">
+        <StackPanel Spacing="20" Margin="20">
+            <StackPanel Orientation="Horizontal" Spacing="20" VerticalAlignment="Top">
+                <TextBlock Text="🏆 CLASSEMENT" FontSize="28" FontWeight="Bold" Foreground="#f39c12" VerticalAlignment="Center"/>
+                <Button Content="Retour" Background="#95a5a6" Foreground="White" 
+                        Height="40" Padding="20,0" FontWeight="Bold" CornerRadius="4"
+                        Command="{Binding BackCommand}" HorizontalAlignment="Right"/>
+            </StackPanel>
+            
+            <Border Background="#34495e" CornerRadius="8" Padding="15">
+                <ListBox ItemsSource="{Binding TopPlayers}" Background="#34495e" Foreground="#ecf0f1">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10" Background="#2c3e50" Margin="0,5" CornerRadius="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Username}" FontSize="16" Foreground="#ecf0f1" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding BestScore}" FontSize="16" FontWeight="Bold" Foreground="#2ecc71" Grid.Column="1" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

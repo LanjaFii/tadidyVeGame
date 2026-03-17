@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TadidyVeGame.ViewModels"
+             x:Class="TadidyVeGame.Views.CompetitionModeView"
+             x:DataType="vm:CompetitionModeViewModel">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+        <TextBlock Text="MODE COMPÉTITION" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+        
+        <Button Content="En Ligne (Render)" 
+                Command="{Binding SelectOnlineCommand}"
+                Width="200" HorizontalContentAlignment="Center"/>
+        
+        <Button Content="Hors Ligne (Local)" 
+                Command="{Binding SelectOfflineCommand}"
+                Width="200" HorizontalContentAlignment="Center"/>
+        
+        <Button Content="Retour" 
+                Command="{Binding BackCommand}"
+                Classes="Outline" Width="100" HorizontalAlignment="Center"/>
+    </StackPanel>
+</UserControl>

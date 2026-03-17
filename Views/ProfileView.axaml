@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TadidyVeGame.ViewModels"
+             x:Class="TadidyVeGame.Views.ProfileView"
+             x:DataType="vm:ProfileViewModel">
+    <Grid Background="#2c3e50" ShowGridLines="False">
+        <StackPanel Spacing="20" Margin="30" VerticalAlignment="Center" HorizontalAlignment="Center" Width="450">
+            <StackPanel Orientation="Horizontal" Spacing="20" VerticalAlignment="Top">
+                <TextBlock Text="👤 MON PROFIL" FontSize="28" FontWeight="Bold" Foreground="#ecf0f1" VerticalAlignment="Center"/>
+                <Button Content="Retour" Background="#95a5a6" Foreground="White" 
+                        Height="40" Padding="20,0" FontWeight="Bold" CornerRadius="4"
+                        Command="{Binding BackCommand}" HorizontalAlignment="Right"/>
+            </StackPanel>
+            
+            <Border Background="#34495e" CornerRadius="8" Padding="25">
+                <StackPanel Spacing="20">
+                    <TextBlock Text="{Binding Username}" FontSize="24" FontWeight="Bold" Foreground="#f39c12" HorizontalAlignment="Center"/>
+                    
+                    <Border Background="#2c3e50" CornerRadius="4" Padding="15">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="5">
+                                    <TextBlock Text="Meilleur Score" Foreground="#bdc3c7" FontSize="12"/>
+                                    <TextBlock Text="{Binding BestScore}" FontSize="20" FontWeight="Bold" Foreground="#2ecc71"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="5" HorizontalAlignment="Right">
+                                    <TextBlock Text="Inscription" Foreground="#bdc3c7" FontSize="12"/>
+                                    <TextBlock Text="{Binding CreatedAt, StringFormat='dd/MM/yyyy'}" FontSize="14" Foreground="#ecf0f1"/>
+                                </StackPanel>
+                            </Grid>
+                            
+                            <TextBlock Text="Biographie" Foreground="#bdc3c7" FontSize="12" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding Bio}" Foreground="#ecf0f1" FontSize="14" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Button Content="Déconnexion" Background="#e74c3c" Foreground="White" 
+                            Height="45" FontSize="14" FontWeight="Bold" CornerRadius="4"
+                            Command="{Binding LogoutCommand}" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TadidyVeGame.ViewModels"
+             x:Class="TadidyVeGame.Views.MainMenuView"
+             x:DataType="vm:MainMenuViewModel">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+        <TextBlock Text="TADIDY VE ?" FontSize="40" FontWeight="Black" Foreground="#3498db"/>
+        
+        <Button Content="Entraînement Local" 
+                Command="{Binding StartTrainingCommand}"
+                Width="250" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        
+        <Button Content="Compétition" 
+                Command="{Binding GoToCompetitionCommand}"
+                Width="250" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Background="#e67e22"/>
+    </StackPanel>
+</UserControl>
