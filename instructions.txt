@@ -1,0 +1,45 @@
+// Structure du projet
+TadidyVeGame/
+├─ App.axaml
+├─ App.axaml.cs
+├─ Program.cs
+├─ TadidyVeGame.csproj
+├─ appsettings.json                 # Config API online/offline
+├─ Assets/                          # Images, sons
+│   ├─ sounds/
+│   └─ images/
+├─ Models/                          # Classes métiers
+│   ├─ GameEngine.cs
+│   ├─ Player.cs
+│   ├─ Score.cs
+│   └─ ApiClient.cs                 # Gestion appels API online/offline
+├─ ViewModels/                       # Logique et binding MVVM
+│   ├─ MainMenuViewModel.cs
+│   ├─ CompetitionModeViewModel.cs
+│   ├─ LoginViewModel.cs
+│   ├─ RegisterViewModel.cs
+│   ├─ GameViewModel.cs
+│   ├─ ScoreViewModel.cs
+│   ├─ ProfileViewModel.cs
+│   ├─ LeaderboardViewModel.cs
+│   └─ MyScoresViewModel.cs
+├─ Views/                            # UI XAML
+│   ├─ MainMenuView.axaml
+│   ├─ CompetitionModeView.axaml
+│   ├─ LoginView.axaml
+│   ├─ RegisterView.axaml
+│   ├─ GameView.axaml
+│   ├─ ScoreView.axaml
+│   ├─ ProfileView.axaml
+│   ├─ LeaderboardView.axaml
+│   └─ MyScoresView.axaml
+├─ Services/                         # Services pour l’API et SQLite
+│   ├─ AuthService.cs
+│   ├─ PlayerService.cs
+│   ├─ ScoreService.cs
+│   └─ LocalDatabase.cs              # Gestion SQLite local
+├─ Utils/                            # Helpers généraux
+│   ├─ ConfigHelper.cs               # Lire appsettings.json
+│   ├─ SoundPlayer.cs
+│   └─ TimerHelper.cs
+└─ .gitignore
