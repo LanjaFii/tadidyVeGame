@@ -1,0 +1,38 @@
+# Build / bin / obj
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+*.vs/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Packages
+*.nupkg
+*.snupkg
+*.nuspec
+.packages/
+
+# Dotnet tool manifest
+.dotnet/tools/
+
+# SQLite local db
+*.db
+
+# Assets temporaires
+Assets/tmp/
