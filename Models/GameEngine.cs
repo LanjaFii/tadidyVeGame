@@ -11,6 +11,8 @@ public class GameEngine
     public int CurrentLevel { get; private set; } = 1;
     
     public event Action<int>? OnShowSquare;
+    public event Action<int>? OnCorrectSquare; // NOUVEAU
+    public event Action<int>? OnWrongSquare;   // NOUVEAU
     public event Action? OnGameOver;
     public event Action? OnLevelUp;
 
@@ -24,23 +26,21 @@ public class GameEngine
     public void StartNewLevel()
     {
         _userIndex = 0;
-        _sequence.Clear(); // On vide l'ancienne séquence
+        _sequence.Clear();
         
-        // On génère une toute nouvelle séquence de la taille du niveau actuel
         for (int i = 0; i < CurrentLevel; i++)
         {
             _sequence.Add(Random.Shared.Next(0, 9));
         }
     }
 
-    // Devenu asynchrone pour que le ViewModel puisse l'attendre
     public async Task PlaySequenceAsync()
     {
         foreach (var id in _sequence)
         {
             OnShowSquare?.Invoke(id);
-            await Task.Delay(700); // Temps allumé
-            await Task.Delay(200); // Petite pause entre 2 cases identiques
+            await Task.Delay(700);
+            await Task.Delay(200);
         }
     }
 
@@ -48,6 +48,7 @@ public class GameEngine
     {
         if (_sequence[_userIndex] == squareId)
         {
+            OnCorrectSquare?.Invoke(squareId); // Déclenche l'animation de succès
             _userIndex++;
             if (_userIndex >= _sequence.Count)
             {
@@ -57,6 +58,7 @@ public class GameEngine
         }
         else
         {
+            OnWrongSquare?.Invoke(squareId);   // Déclenche l'animation d'erreur
             OnGameOver?.Invoke();
         }
     }

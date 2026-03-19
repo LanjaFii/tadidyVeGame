@@ -35,23 +35,29 @@ public class GameViewModel : ViewModelBase
     private string _footerMessage = "";
     private string _currentPhaseText = "";
     
-    private IBrush _square0Color = new SolidColorBrush(Color.Parse("#e74c3c"));
-    private IBrush _square1Color = new SolidColorBrush(Color.Parse("#3498db"));
-    private IBrush _square2Color = new SolidColorBrush(Color.Parse("#2ecc71"));
-    private IBrush _square3Color = new SolidColorBrush(Color.Parse("#e67e22"));
-    private IBrush _square4Color = new SolidColorBrush(Color.Parse("#f1c40f"));
-    private IBrush _square5Color = new SolidColorBrush(Color.Parse("#1abc9c"));
-    private IBrush _square6Color = new SolidColorBrush(Color.Parse("#9b59b6"));
-    private IBrush _square7Color = new SolidColorBrush(Color.Parse("#e91e63"));
-    private IBrush _square8Color = new SolidColorBrush(Color.Parse("#95a5a6"));
-    
-    // Les cases sont sombres par défaut (0.3)
-    private double[] _opacities = new double[9] { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+    // Mots de feedback
+    private static readonly string[] PosWords = { "Cool!", "OK", "Yes!", "Haha", "Top!" };
+    private static readonly string[] NegWords = { "Nope", "Oups", "Bruh", "Aïe" };
 
-    public GamePhase CurrentPhase { get => _currentPhase; set => this.RaiseAndSetIfChanged(ref _currentPhase, value); }
+    private IBrush[] _squareColors = new IBrush[9];
+    private double[] _opacities = new double[9] { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+    private string[] _squareTexts = new string[9] { "", "", "", "", "", "", "", "", "" };
+
+    public GamePhase CurrentPhase { get => _currentPhase; set { this.RaiseAndSetIfChanged(ref _currentPhase, value); this.RaisePropertyChanged(nameof(IsPlayerPhase)); } }
     public string LevelText { get => _levelText; set => this.RaiseAndSetIfChanged(ref _levelText, value); }
     public string TimerText { get => _timerText; set => this.RaiseAndSetIfChanged(ref _timerText, value); }
-    public string StatusMessage { get => _statusMessage; set => this.RaiseAndSetIfChanged(ref _statusMessage, value); }
+    
+    public string StatusMessage 
+    { 
+        get => _statusMessage; 
+        set 
+        { 
+            this.RaiseAndSetIfChanged(ref _statusMessage, value); 
+            this.RaisePropertyChanged(nameof(StatusColor));
+            this.RaisePropertyChanged(nameof(StatusBackgroundColor));
+        } 
+    }
+    
     public string FooterMessage { get => _footerMessage; set => this.RaiseAndSetIfChanged(ref _footerMessage, value); }
     public string CurrentPhaseText { get => _currentPhaseText; set => this.RaiseAndSetIfChanged(ref _currentPhaseText, value); }
 
@@ -59,16 +65,18 @@ public class GameViewModel : ViewModelBase
     public bool IsPlayerPhase => CurrentPhase == GamePhase.Playing;
     public bool ShowNavigationMenus => _isCompetition;
 
-    public IBrush Square0Color { get => _square0Color; set => this.RaiseAndSetIfChanged(ref _square0Color, value); }
-    public IBrush Square1Color { get => _square1Color; set => this.RaiseAndSetIfChanged(ref _square1Color, value); }
-    public IBrush Square2Color { get => _square2Color; set => this.RaiseAndSetIfChanged(ref _square2Color, value); }
-    public IBrush Square3Color { get => _square3Color; set => this.RaiseAndSetIfChanged(ref _square3Color, value); }
-    public IBrush Square4Color { get => _square4Color; set => this.RaiseAndSetIfChanged(ref _square4Color, value); }
-    public IBrush Square5Color { get => _square5Color; set => this.RaiseAndSetIfChanged(ref _square5Color, value); }
-    public IBrush Square6Color { get => _square6Color; set => this.RaiseAndSetIfChanged(ref _square6Color, value); }
-    public IBrush Square7Color { get => _square7Color; set => this.RaiseAndSetIfChanged(ref _square7Color, value); }
-    public IBrush Square8Color { get => _square8Color; set => this.RaiseAndSetIfChanged(ref _square8Color, value); }
+    // Propriétés de Couleurs
+    public IBrush Square0Color { get => _squareColors[0]; set { _squareColors[0] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square1Color { get => _squareColors[1]; set { _squareColors[1] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square2Color { get => _squareColors[2]; set { _squareColors[2] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square3Color { get => _squareColors[3]; set { _squareColors[3] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square4Color { get => _squareColors[4]; set { _squareColors[4] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square5Color { get => _squareColors[5]; set { _squareColors[5] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square6Color { get => _squareColors[6]; set { _squareColors[6] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square7Color { get => _squareColors[7]; set { _squareColors[7] = value; this.RaisePropertyChanged(); } }
+    public IBrush Square8Color { get => _squareColors[8]; set { _squareColors[8] = value; this.RaisePropertyChanged(); } }
 
+    // Propriétés d'Opacité
     public double Square0Opacity { get => _opacities[0]; set { _opacities[0] = value; this.RaisePropertyChanged(); } }
     public double Square1Opacity { get => _opacities[1]; set { _opacities[1] = value; this.RaisePropertyChanged(); } }
     public double Square2Opacity { get => _opacities[2]; set { _opacities[2] = value; this.RaisePropertyChanged(); } }
@@ -79,13 +87,41 @@ public class GameViewModel : ViewModelBase
     public double Square7Opacity { get => _opacities[7]; set { _opacities[7] = value; this.RaisePropertyChanged(); } }
     public double Square8Opacity { get => _opacities[8]; set { _opacities[8] = value; this.RaisePropertyChanged(); } }
 
+    // Propriétés de Textes
+    public string Square0Text { get => _squareTexts[0]; set { _squareTexts[0] = value; this.RaisePropertyChanged(); } }
+    public string Square1Text { get => _squareTexts[1]; set { _squareTexts[1] = value; this.RaisePropertyChanged(); } }
+    public string Square2Text { get => _squareTexts[2]; set { _squareTexts[2] = value; this.RaisePropertyChanged(); } }
+    public string Square3Text { get => _squareTexts[3]; set { _squareTexts[3] = value; this.RaisePropertyChanged(); } }
+    public string Square4Text { get => _squareTexts[4]; set { _squareTexts[4] = value; this.RaisePropertyChanged(); } }
+    public string Square5Text { get => _squareTexts[5]; set { _squareTexts[5] = value; this.RaisePropertyChanged(); } }
+    public string Square6Text { get => _squareTexts[6]; set { _squareTexts[6] = value; this.RaisePropertyChanged(); } }
+    public string Square7Text { get => _squareTexts[7]; set { _squareTexts[7] = value; this.RaisePropertyChanged(); } }
+    public string Square8Text { get => _squareTexts[8]; set { _squareTexts[8] = value; this.RaisePropertyChanged(); } }
+
     public IBrush TimerColor => _timeRemaining <= 3 
-        ? new SolidColorBrush(Color.Parse("#e74c3c"))
+        ? new SolidColorBrush(Color.Parse("#ff7675"))
         : new SolidColorBrush(Color.Parse("#2ecc71"));
     
-    public IBrush StatusColor => _statusMessage.Contains("✗") || _statusMessage.Contains("Erreur")
-        ? new SolidColorBrush(Color.Parse("#e74c3c"))
+    public IBrush StatusColor => _statusMessage.Contains("✗") || _statusMessage.Contains("Erreur") || _statusMessage.Contains("écoulé")
+        ? new SolidColorBrush(Color.Parse("#ff7675"))
         : new SolidColorBrush(Color.Parse("#2ecc71"));
+
+    // Fond dynamique pour le message de statut
+    public IBrush StatusBackgroundColor
+    {
+        get
+        {
+            if (_statusMessage.Contains("Erreur") || _statusMessage.Contains("écoulé"))
+                return new SolidColorBrush(Color.Parse("#33ff7675")); // Rouge transparent
+            if (_statusMessage.Contains("Observation"))
+                return new SolidColorBrush(Color.Parse("#33f1c40f")); // Jaune transparent
+            if (_statusMessage.Contains("Refais"))
+                return new SolidColorBrush(Color.Parse("#333498db")); // Bleu transparent
+            if (_statusMessage.Contains("Bravo"))
+                return new SolidColorBrush(Color.Parse("#332ecc71")); // Vert transparent
+            return new SolidColorBrush(Color.Parse("#11FFFFFF")); // Par défaut discret
+        }
+    }
 
     public ReactiveCommand<Unit, Unit> StartGameCommand { get; }
     public ReactiveCommand<string, Unit> SquareClickCommand { get; }
@@ -100,18 +136,21 @@ public class GameViewModel : ViewModelBase
         _engine = new GameEngine();
         _gameStartTime = DateTime.Now;
         
+        InitOriginalColors();
+
         _engine.OnShowSquare += (squareId) => FlashSquare(squareId);
+        _engine.OnCorrectSquare += HandleCorrectSquare;
+        _engine.OnWrongSquare += HandleWrongSquare;
         _engine.OnLevelUp += HandleLevelUp;
         _engine.OnGameOver += HandleGameOver;
 
         StartGameCommand = ReactiveCommand.Create(() => BeginGame());
         
-        // On fait clignoter la case quand le joueur clique pour du feedback
         SquareClickCommand = ReactiveCommand.Create<string>(id => 
         {
-            int parsedId = int.Parse(id);
-            FlashSquare(parsedId);
-            _engine.ProcessInput(parsedId);
+            // La grille ignore les clics si c'est pas IsPlayerPhase (grâce à IsHitTestVisible),
+            // Donc ici on est sûr que c'est le tour du joueur.
+            _engine.ProcessInput(int.Parse(id));
         });
 
         GoToLeaderboardCommand = ReactiveCommand.Create(() => { _gameCts.Cancel(); _mainNav.NavigateToLeaderboard(); });
@@ -120,14 +159,55 @@ public class GameViewModel : ViewModelBase
 
         CurrentPhase = GamePhase.Initial;
         CurrentPhaseText = "";
-        StatusMessage = "Appuyez sur Commencer pour débuter";
+        StatusMessage = "Appuyez sur Commencer";
         FooterMessage = "Mémorisez la séquence, puis reproduisez-la";
+    }
+
+    private void InitOriginalColors()
+    {
+        Square0Color = new SolidColorBrush(Color.Parse("#e74c3c"));
+        Square1Color = new SolidColorBrush(Color.Parse("#3498db"));
+        Square2Color = new SolidColorBrush(Color.Parse("#2ecc71"));
+        Square3Color = new SolidColorBrush(Color.Parse("#e67e22"));
+        Square4Color = new SolidColorBrush(Color.Parse("#f1c40f"));
+        Square5Color = new SolidColorBrush(Color.Parse("#1abc9c"));
+        Square6Color = new SolidColorBrush(Color.Parse("#9b59b6"));
+        Square7Color = new SolidColorBrush(Color.Parse("#e91e63"));
+        Square8Color = new SolidColorBrush(Color.Parse("#95a5a6"));
+    }
+
+    private IBrush GetOriginalColor(int id)
+    {
+        return id switch
+        {
+            0 => new SolidColorBrush(Color.Parse("#e74c3c")),
+            1 => new SolidColorBrush(Color.Parse("#3498db")),
+            2 => new SolidColorBrush(Color.Parse("#2ecc71")),
+            3 => new SolidColorBrush(Color.Parse("#e67e22")),
+            4 => new SolidColorBrush(Color.Parse("#f1c40f")),
+            5 => new SolidColorBrush(Color.Parse("#1abc9c")),
+            6 => new SolidColorBrush(Color.Parse("#9b59b6")),
+            7 => new SolidColorBrush(Color.Parse("#e91e63")),
+            8 => new SolidColorBrush(Color.Parse("#95a5a6")),
+            _ => new SolidColorBrush(Colors.White)
+        };
+    }
+
+    private void ResetGrid()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            SetSquareColor(i, GetOriginalColor(i));
+            SetSquareText(i, "");
+            SetSquareOpacity(i, 0.3);
+        }
     }
 
     private void BeginGame()
     {
-        _engine.ResetGame(); // On remet au niveau 1
+        _engine.ResetGame();
         LevelText = "1";
+        ResetGrid();
         _engine.StartNewLevel();
         _ = ShowMemorizingPhaseAsync();
     }
@@ -145,7 +225,6 @@ public class GameViewModel : ViewModelBase
             await Task.Delay(1000, _gameCts.Token);
             if (_gameCts.Token.IsCancellationRequested) return;
             
-            // On attend VRAIMENT que la séquence soit finie de jouer !
             await _engine.PlaySequenceAsync();
             
             await Task.Delay(500, _gameCts.Token);
@@ -159,6 +238,41 @@ public class GameViewModel : ViewModelBase
             StartTimer();
         }
         catch (OperationCanceledException) { }
+    }
+
+    private void HandleCorrectSquare(int id)
+    {
+        // Change en vert clair et ajoute le texte positif
+        SetSquareColor(id, new SolidColorBrush(Color.Parse("#7bed9f"))); // Vert très clair
+        SetSquareText(id, PosWords[Random.Shared.Next(PosWords.Length)]);
+        SetSquareOpacity(id, 1.0);
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(400); // Temps du feedback
+            // Restaure la case
+            SetSquareColor(id, GetOriginalColor(id));
+            SetSquareText(id, "");
+            SetSquareOpacity(id, 0.3);
+        });
+    }
+
+    private void HandleWrongSquare(int id)
+    {
+        // Change en rouge clair et ajoute le texte négatif (reste affiché)
+        SetSquareColor(id, new SolidColorBrush(Color.Parse("#ff7675"))); // Rouge très clair
+        SetSquareText(id, NegWords[Random.Shared.Next(NegWords.Length)]);
+        SetSquareOpacity(id, 1.0);
+    }
+
+    private void FlashSquare(int squareId)
+    {
+        Task.Run(async () =>
+        {
+            SetSquareOpacity(squareId, 1.0);
+            await Task.Delay(350);
+            SetSquareOpacity(squareId, 0.3);
+        });
     }
 
     private void HandleLevelUp()
@@ -176,6 +290,7 @@ public class GameViewModel : ViewModelBase
             await Task.Delay(1000, _gameCts.Token);
             if (_gameCts.Token.IsCancellationRequested) return;
             
+            ResetGrid();
             _engine.StartNewLevel();
             await ShowMemorizingPhaseAsync();
         }
@@ -206,14 +321,36 @@ public class GameViewModel : ViewModelBase
         catch (OperationCanceledException) { }
     }
 
-    private void FlashSquare(int squareId)
+    private void SetSquareColor(int id, IBrush color)
     {
-        Task.Run(async () =>
+        switch (id)
         {
-            SetSquareOpacity(squareId, 1.0); // La case s'allume complètement !
-            await Task.Delay(350);
-            SetSquareOpacity(squareId, 0.3); // La case redevient sombre
-        });
+            case 0: Square0Color = color; break;
+            case 1: Square1Color = color; break;
+            case 2: Square2Color = color; break;
+            case 3: Square3Color = color; break;
+            case 4: Square4Color = color; break;
+            case 5: Square5Color = color; break;
+            case 6: Square6Color = color; break;
+            case 7: Square7Color = color; break;
+            case 8: Square8Color = color; break;
+        }
+    }
+
+    private void SetSquareText(int id, string text)
+    {
+        switch (id)
+        {
+            case 0: Square0Text = text; break;
+            case 1: Square1Text = text; break;
+            case 2: Square2Text = text; break;
+            case 3: Square3Text = text; break;
+            case 4: Square4Text = text; break;
+            case 5: Square5Text = text; break;
+            case 6: Square6Text = text; break;
+            case 7: Square7Text = text; break;
+            case 8: Square8Text = text; break;
+        }
     }
 
     private void SetSquareOpacity(int squareId, double opacity)
