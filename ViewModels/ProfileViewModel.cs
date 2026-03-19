@@ -45,7 +45,7 @@ public class ProfileViewModel : ViewModelBase
     {
         _mainNav = mainNav;
         _authService = authService;
-        BackCommand = ReactiveCommand.Create(() => _mainNav.NavigateToMainMenu());
+        BackCommand = ReactiveCommand.Create(() => _mainNav.GoBack());
         LogoutCommand = ReactiveCommand.Create(() =>
         {
             _authService.CurrentPlayer = null;

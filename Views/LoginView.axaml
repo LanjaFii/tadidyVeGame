@@ -2,24 +2,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TadidyVeGame.ViewModels"
              x:Class="TadidyVeGame.Views.LoginView"
-             x:DataType="vm:LoginViewModel">
-    <Grid Background="#2c3e50" ShowGridLines="False">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="350" Spacing="20">
-            <TextBlock Text="CONNEXION" FontSize="32" FontWeight="Bold" Foreground="#ecf0f1" HorizontalAlignment="Center"/>
-            
-            <Border Background="#34495e" CornerRadius="8" Padding="20">
-                <StackPanel Spacing="15">
-                    <TextBlock Text="Nom d'utilisateur" Foreground="#bdc3c7" FontSize="14"/>
-                    <TextBox Text="{Binding Username}" Background="#2c3e50" Foreground="#ecf0f1" 
-                             Padding="12" CornerRadius="4" Height="40" FontSize="14"/>
-                    
-                    <TextBlock Text="Mot de passe" Foreground="#bdc3c7" FontSize="14"/>
-                    <TextBox Text="{Binding Password}" Background="#2c3e50" Foreground="#ecf0f1" 
-                             Padding="12" CornerRadius="4" Height="40" FontSize="14"/>
-                    
-                    <Button Content="Se connecter" Background="#3498db" Foreground="White" 
-                            Height="45" FontSize="16" FontWeight="Bold" CornerRadius="4"
-                            Command="{Binding LoginCommand}" Margin="0,10,0,0"/>
+             x:DataType="vm:LoginViewModel"
+             Background="#1a1a1a">
+    <Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*">
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="400" Spacing="20">
+            <!-- Title -->
+            <TextBlock Text="TADIDY VE" FontSize="48" FontWeight="Bold" Foreground="#3498db" HorizontalAlignment="Center"/>
+            <TextBlock Text="Connexion" FontSize="24" Foreground="#ecf0f1" HorizontalAlignment="Center"/>
+
+            <!-- Form -->
+            <Border Background="#2c3e50" CornerRadius="12" Padding="30" Margin="0,20,0,0">
+                <StackPanel Spacing="20">
+                    <!-- Username -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Nom d'utilisateur" Foreground="#bdc3c7" FontSize="14" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Username}" 
+                                 Background="#34495e" Foreground="#ecf0f1" 
+                                 Padding="12" CornerRadius="6" Height="40" FontSize="14"
+                                 BorderBrush="#3498db" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Password -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Mot de passe" Foreground="#bdc3c7" FontSize="14" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Password}" 
+                                 Background="#34495e" Foreground="#ecf0f1" 
+                                 Padding="12" CornerRadius="6" Height="40" FontSize="14"
+                                 BorderBrush="#3498db" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Error Message -->
+                    <TextBlock Text="{Binding ErrorMessage}" 
+                               Foreground="#e74c3c" FontSize="12" 
+                               TextWrapping="Wrap" IsVisible="{Binding HasError}"/>
+
+                    <!-- Success Message -->
+                    <TextBlock Text="{Binding SuccessMessage}" 
+                               Foreground="#2ecc71" FontSize="12" 
+                               TextWrapping="Wrap" IsVisible="{Binding HasSuccess}"/>
+
+                    <!-- Login Button -->
+                    <Button Content="Se connecter" 
+                            Background="#3498db" Foreground="White" 
+                            Height="45" FontSize="16" FontWeight="Bold" CornerRadius="6"
+                            Command="{Binding LoginCommand}" 
+                            IsEnabled="{Binding !IsLoading}"
+                            Margin="0,10,0,0"/>
+
+                    <!-- Register Link -->
+                    <StackPanel Spacing="10" HorizontalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock Text="Pas de compte ?" Foreground="#bdc3c7" FontSize="12"/>
+                        <Button Content="S'inscrire ici" Background="Transparent" 
+                                Foreground="#3498db" Padding="0"
+                                Command="{Binding NavigateToRegisterCommand}"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </StackPanel>

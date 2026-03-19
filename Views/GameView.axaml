@@ -1,20 +1,85 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="TadidyVeGame.Views.GameView">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
-        <TextBlock Text="{Binding LevelText}" FontSize="24" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding TimerText}" FontSize="18" Foreground="Red" HorizontalAlignment="Center"/>
+             xmlns:vm="using:TadidyVeGame.ViewModels"
+             x:Class="TadidyVeGame.Views.GameView"
+             x:DataType="vm:GameViewModel"
+             Background="#1a1a1a">
+    
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
         
-        <UniformGrid Rows="3" Columns="3" Width="300" Height="300">
-            <Button Name="Btn0" Background="Red" Command="{Binding SquareClickCommand}" CommandParameter="0" Margin="5"/>
-            <Button Name="Btn1" Background="Blue" Command="{Binding SquareClickCommand}" CommandParameter="1" Margin="5"/>
-            <Button Name="Btn2" Background="Green" Command="{Binding SquareClickCommand}" CommandParameter="2" Margin="5"/>
-            <Button Name="Btn3" Background="Yellow" Command="{Binding SquareClickCommand}" CommandParameter="3" Margin="5"/>
-            <Button Name="Btn4" Background="Orange" Command="{Binding SquareClickCommand}" CommandParameter="4" Margin="5"/>
-            <Button Name="Btn5" Background="Purple" Command="{Binding SquareClickCommand}" CommandParameter="5" Margin="5"/>
-            <Button Name="Btn6" Background="Cyan" Command="{Binding SquareClickCommand}" CommandParameter="6" Margin="5"/>
-            <Button Name="Btn7" Background="Magenta" Command="{Binding SquareClickCommand}" CommandParameter="7" Margin="5"/>
-            <Button Name="Btn8" Background="Gray" Command="{Binding SquareClickCommand}" CommandParameter="8" Margin="5"/>
-        </UniformGrid>
-    </StackPanel>
+        <Border Grid.Row="0" Background="#2c3e50" Padding="20" IsVisible="{Binding ShowNavigationMenus}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Column="0" Text="TADIDY VE" FontSize="20" FontWeight="Bold" Foreground="#3498db" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="20">
+                    <Button Content="Classement" Command="{Binding GoToLeaderboardCommand}" Classes="link"/>
+                    <Button Content="Profil" Command="{Binding GoToProfileCommand}" Classes="link"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="#2c3e50" Padding="15" Margin="20,10,20,0" CornerRadius="8">
+            <Grid ColumnDefinitions="*,*,*">
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Niveau" Foreground="#bdc3c7" FontSize="12"/>
+                    <TextBlock Text="{Binding LevelText}" FontSize="24" FontWeight="Bold" Foreground="#3498db"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                    <TextBlock Text="Temps" Foreground="#bdc3c7" FontSize="12" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding TimerText}" FontSize="28" FontWeight="Bold" Foreground="{Binding TimerColor}" FontFamily="Courier New"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                    <TextBlock Text="Phase" Foreground="#bdc3c7" FontSize="12" HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding CurrentPhaseText}" FontSize="16" FontWeight="Bold" Foreground="#2ecc71"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="20">
+            <DockPanel LastChildFill="True">
+                
+                <TextBlock DockPanel.Dock="Top" 
+                           Text="{Binding StatusMessage}" 
+                           Foreground="{Binding StatusColor}" 
+                           HorizontalAlignment="Center" 
+                           FontSize="22" FontWeight="SemiBold" 
+                           Margin="0,0,0,20"/>
+
+                <Panel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    
+                    <Viewbox Stretch="Uniform" Width="550" Height="550">
+                        <UniformGrid Rows="3" Columns="3" 
+                                     IsVisible="{Binding IsGameGridVisible}">
+                            
+                            <Button Name="Btn0" Background="{Binding Square0Color}" Command="{Binding SquareClickCommand}" CommandParameter="0" Opacity="{Binding Square0Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn1" Background="{Binding Square1Color}" Command="{Binding SquareClickCommand}" CommandParameter="1" Opacity="{Binding Square1Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn2" Background="{Binding Square2Color}" Command="{Binding SquareClickCommand}" CommandParameter="2" Opacity="{Binding Square2Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn3" Background="{Binding Square3Color}" Command="{Binding SquareClickCommand}" CommandParameter="3" Opacity="{Binding Square3Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn4" Background="{Binding Square4Color}" Command="{Binding SquareClickCommand}" CommandParameter="4" Opacity="{Binding Square4Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn5" Background="{Binding Square5Color}" Command="{Binding SquareClickCommand}" CommandParameter="5" Opacity="{Binding Square5Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn6" Background="{Binding Square6Color}" Command="{Binding SquareClickCommand}" CommandParameter="6" Opacity="{Binding Square6Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn7" Background="{Binding Square7Color}" Command="{Binding SquareClickCommand}" CommandParameter="7" Opacity="{Binding Square7Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="Btn8" Background="{Binding Square8Color}" Command="{Binding SquareClickCommand}" CommandParameter="8" Opacity="{Binding Square8Opacity}" Margin="8" CornerRadius="15" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </UniformGrid>
+                    </Viewbox>
+
+                    <Button Content="Commencer la partie" 
+                            Command="{Binding StartGameCommand}" 
+                            IsVisible="{Binding IsStartButtonVisible}"
+                            Width="280" Height="80" CornerRadius="40"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Background="#3498db" Foreground="White"
+                            FontSize="20" FontWeight="Bold"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                        <Button.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
+                            </Transitions>
+                        </Button.Transitions>
+                    </Button>
+                </Panel>
+            </DockPanel>
+        </Grid>
+
+        <TextBlock Grid.Row="3" Text="{Binding FooterMessage}" Foreground="#95a5a6" HorizontalAlignment="Center" Margin="10"/>
+    </Grid>
 </UserControl>

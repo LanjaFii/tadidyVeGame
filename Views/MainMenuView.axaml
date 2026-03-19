@@ -2,17 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TadidyVeGame.ViewModels"
              x:Class="TadidyVeGame.Views.MainMenuView"
-             x:DataType="vm:MainMenuViewModel">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
-        <TextBlock Text="TADIDY VE ?" FontSize="40" FontWeight="Black" Foreground="#3498db"/>
-        
-        <Button Content="Entraînement Local" 
-                Command="{Binding StartTrainingCommand}"
-                Width="250" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        
-        <Button Content="Compétition" 
-                Command="{Binding GoToCompetitionCommand}"
-                Width="250" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                Background="#e67e22"/>
-    </StackPanel>
+             x:DataType="vm:MainMenuViewModel"
+             Background="#1a1a1a">
+    <Border Padding="20">
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*">
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#2c3e50" CornerRadius="12" Padding="30" Margin="0,0,0,40">
+                <StackPanel Spacing="10" HorizontalAlignment="Center">
+                    <TextBlock Text="TADIDY VE ?" FontSize="56" FontWeight="Black" Foreground="#3498db" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Un jeu de mémoire addictif" FontSize="16" Foreground="#bdc3c7" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+                <Button Content="Entraînement Local" Command="{Binding StartTrainingCommand}" Width="350" Height="60" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#3498db" Foreground="White" FontSize="18" FontWeight="Bold" CornerRadius="8" BorderThickness="2" BorderBrush="#2980b9"/>
+                <Button Content="Compétition" Command="{Binding GoToCompetitionCommand}" Width="350" Height="60" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#e67e22" Foreground="White" FontSize="18" FontWeight="Bold" CornerRadius="8" BorderThickness="2" BorderBrush="#d35400"/>
+            </StackPanel>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Spacing="15">
+                <TextBlock Text="Bienvenue" FontSize="13" Foreground="#bdc3c7" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

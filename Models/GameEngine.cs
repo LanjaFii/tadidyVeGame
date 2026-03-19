@@ -10,24 +10,37 @@ public class GameEngine
     private int _userIndex = 0;
     public int CurrentLevel { get; private set; } = 1;
     
-    public event Action<int>? OnShowSquare; // Pour l'UI
+    public event Action<int>? OnShowSquare;
     public event Action? OnGameOver;
     public event Action? OnLevelUp;
+
+    public void ResetGame()
+    {
+        CurrentLevel = 1;
+        _sequence.Clear();
+        _userIndex = 0;
+    }
 
     public void StartNewLevel()
     {
         _userIndex = 0;
-        // Ajouter un carré aléatoire (0-8 pour une grille 3x3)
-        _sequence.Add(Random.Shared.Next(0, 9));
-        PlaySequence();
+        _sequence.Clear(); // On vide l'ancienne séquence
+        
+        // On génère une toute nouvelle séquence de la taille du niveau actuel
+        for (int i = 0; i < CurrentLevel; i++)
+        {
+            _sequence.Add(Random.Shared.Next(0, 9));
+        }
     }
 
-    private async void PlaySequence()
+    // Devenu asynchrone pour que le ViewModel puisse l'attendre
+    public async Task PlaySequenceAsync()
     {
         foreach (var id in _sequence)
         {
             OnShowSquare?.Invoke(id);
-            await Task.Delay(800); // Temps d'allumage
+            await Task.Delay(700); // Temps allumé
+            await Task.Delay(200); // Petite pause entre 2 cases identiques
         }
     }
 
@@ -48,5 +61,10 @@ public class GameEngine
         }
     }
 
-    public int CalculateTimeLimit() => 5 + (CurrentLevel - 1) * 3;
+    public void TimeoutGame()
+    {
+        OnGameOver?.Invoke();
+    }
+
+    public int CalculateTimeLimit() => 10 + (CurrentLevel - 1) * 3;
 }
