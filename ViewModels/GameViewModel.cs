@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media;
+using Avalonia.Threading; // Ajout CRUCIAL pour forcer la maj UI
 using ReactiveUI;
 using System.Reactive;
 using TadidyVeGame.Models;
@@ -35,12 +36,11 @@ public class GameViewModel : ViewModelBase
     private string _footerMessage = "";
     private string _currentPhaseText = "";
     
-    // Mots de feedback
     private static readonly string[] PosWords = { "Cool!", "OK", "Yes!", "Haha", "Top!" };
     private static readonly string[] NegWords = { "Nope", "Oups", "Bruh", "Aïe" };
 
     private IBrush[] _squareColors = new IBrush[9];
-    private double[] _opacities = new double[9] { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+    private double[] _opacities = new double[9] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
     private string[] _squareTexts = new string[9] { "", "", "", "", "", "", "", "", "" };
 
     public GamePhase CurrentPhase { get => _currentPhase; set { this.RaiseAndSetIfChanged(ref _currentPhase, value); this.RaisePropertyChanged(nameof(IsPlayerPhase)); } }
@@ -65,7 +65,6 @@ public class GameViewModel : ViewModelBase
     public bool IsPlayerPhase => CurrentPhase == GamePhase.Playing;
     public bool ShowNavigationMenus => _isCompetition;
 
-    // Propriétés de Couleurs
     public IBrush Square0Color { get => _squareColors[0]; set { _squareColors[0] = value; this.RaisePropertyChanged(); } }
     public IBrush Square1Color { get => _squareColors[1]; set { _squareColors[1] = value; this.RaisePropertyChanged(); } }
     public IBrush Square2Color { get => _squareColors[2]; set { _squareColors[2] = value; this.RaisePropertyChanged(); } }
@@ -76,7 +75,6 @@ public class GameViewModel : ViewModelBase
     public IBrush Square7Color { get => _squareColors[7]; set { _squareColors[7] = value; this.RaisePropertyChanged(); } }
     public IBrush Square8Color { get => _squareColors[8]; set { _squareColors[8] = value; this.RaisePropertyChanged(); } }
 
-    // Propriétés d'Opacité
     public double Square0Opacity { get => _opacities[0]; set { _opacities[0] = value; this.RaisePropertyChanged(); } }
     public double Square1Opacity { get => _opacities[1]; set { _opacities[1] = value; this.RaisePropertyChanged(); } }
     public double Square2Opacity { get => _opacities[2]; set { _opacities[2] = value; this.RaisePropertyChanged(); } }
@@ -87,7 +85,6 @@ public class GameViewModel : ViewModelBase
     public double Square7Opacity { get => _opacities[7]; set { _opacities[7] = value; this.RaisePropertyChanged(); } }
     public double Square8Opacity { get => _opacities[8]; set { _opacities[8] = value; this.RaisePropertyChanged(); } }
 
-    // Propriétés de Textes
     public string Square0Text { get => _squareTexts[0]; set { _squareTexts[0] = value; this.RaisePropertyChanged(); } }
     public string Square1Text { get => _squareTexts[1]; set { _squareTexts[1] = value; this.RaisePropertyChanged(); } }
     public string Square2Text { get => _squareTexts[2]; set { _squareTexts[2] = value; this.RaisePropertyChanged(); } }
@@ -98,28 +95,18 @@ public class GameViewModel : ViewModelBase
     public string Square7Text { get => _squareTexts[7]; set { _squareTexts[7] = value; this.RaisePropertyChanged(); } }
     public string Square8Text { get => _squareTexts[8]; set { _squareTexts[8] = value; this.RaisePropertyChanged(); } }
 
-    public IBrush TimerColor => _timeRemaining <= 3 
-        ? new SolidColorBrush(Color.Parse("#ff7675"))
-        : new SolidColorBrush(Color.Parse("#2ecc71"));
-    
-    public IBrush StatusColor => _statusMessage.Contains("✗") || _statusMessage.Contains("Erreur") || _statusMessage.Contains("écoulé")
-        ? new SolidColorBrush(Color.Parse("#ff7675"))
-        : new SolidColorBrush(Color.Parse("#2ecc71"));
+    public IBrush TimerColor => _timeRemaining <= 3 ? new SolidColorBrush(Color.Parse("#ff7675")) : new SolidColorBrush(Color.Parse("#2ecc71"));
+    public IBrush StatusColor => _statusMessage.Contains("✗") || _statusMessage.Contains("Erreur") || _statusMessage.Contains("écoulé") ? new SolidColorBrush(Color.Parse("#ff7675")) : new SolidColorBrush(Color.Parse("#2ecc71"));
 
-    // Fond dynamique pour le message de statut
     public IBrush StatusBackgroundColor
     {
         get
         {
-            if (_statusMessage.Contains("Erreur") || _statusMessage.Contains("écoulé"))
-                return new SolidColorBrush(Color.Parse("#33ff7675")); // Rouge transparent
-            if (_statusMessage.Contains("Observation"))
-                return new SolidColorBrush(Color.Parse("#33f1c40f")); // Jaune transparent
-            if (_statusMessage.Contains("Refais"))
-                return new SolidColorBrush(Color.Parse("#333498db")); // Bleu transparent
-            if (_statusMessage.Contains("Bravo"))
-                return new SolidColorBrush(Color.Parse("#332ecc71")); // Vert transparent
-            return new SolidColorBrush(Color.Parse("#11FFFFFF")); // Par défaut discret
+            if (_statusMessage.Contains("Erreur") || _statusMessage.Contains("écoulé")) return new SolidColorBrush(Color.Parse("#33ff7675"));
+            if (_statusMessage.Contains("Observation")) return new SolidColorBrush(Color.Parse("#33f1c40f"));
+            if (_statusMessage.Contains("Refais")) return new SolidColorBrush(Color.Parse("#333498db"));
+            if (_statusMessage.Contains("Bravo")) return new SolidColorBrush(Color.Parse("#332ecc71"));
+            return new SolidColorBrush(Color.Parse("#11FFFFFF"));
         }
     }
 
@@ -135,7 +122,6 @@ public class GameViewModel : ViewModelBase
         _isCompetition = isCompetition;
         _engine = new GameEngine();
         _gameStartTime = DateTime.Now;
-        
         InitOriginalColors();
 
         _engine.OnShowSquare += (squareId) => FlashSquare(squareId);
@@ -145,20 +131,13 @@ public class GameViewModel : ViewModelBase
         _engine.OnGameOver += HandleGameOver;
 
         StartGameCommand = ReactiveCommand.Create(() => BeginGame());
-        
-        SquareClickCommand = ReactiveCommand.Create<string>(id => 
-        {
-            // La grille ignore les clics si c'est pas IsPlayerPhase (grâce à IsHitTestVisible),
-            // Donc ici on est sûr que c'est le tour du joueur.
-            _engine.ProcessInput(int.Parse(id));
-        });
+        SquareClickCommand = ReactiveCommand.Create<string>(id => _engine.ProcessInput(int.Parse(id)));
 
         GoToLeaderboardCommand = ReactiveCommand.Create(() => { _gameCts.Cancel(); _mainNav.NavigateToLeaderboard(); });
         GoToProfileCommand = ReactiveCommand.Create(() => { _gameCts.Cancel(); _mainNav.NavigateToProfile(); });
         GoToMyScoresCommand = ReactiveCommand.Create(() => { _gameCts.Cancel(); _mainNav.NavigateToMyScores(); });
 
         CurrentPhase = GamePhase.Initial;
-        CurrentPhaseText = "";
         StatusMessage = "Appuyez sur Commencer";
         FooterMessage = "Mémorisez la séquence, puis reproduisez-la";
     }
@@ -176,22 +155,19 @@ public class GameViewModel : ViewModelBase
         Square8Color = new SolidColorBrush(Color.Parse("#95a5a6"));
     }
 
-    private IBrush GetOriginalColor(int id)
+    private IBrush GetOriginalColor(int id) => id switch
     {
-        return id switch
-        {
-            0 => new SolidColorBrush(Color.Parse("#e74c3c")),
-            1 => new SolidColorBrush(Color.Parse("#3498db")),
-            2 => new SolidColorBrush(Color.Parse("#2ecc71")),
-            3 => new SolidColorBrush(Color.Parse("#e67e22")),
-            4 => new SolidColorBrush(Color.Parse("#f1c40f")),
-            5 => new SolidColorBrush(Color.Parse("#1abc9c")),
-            6 => new SolidColorBrush(Color.Parse("#9b59b6")),
-            7 => new SolidColorBrush(Color.Parse("#e91e63")),
-            8 => new SolidColorBrush(Color.Parse("#95a5a6")),
-            _ => new SolidColorBrush(Colors.White)
-        };
-    }
+        0 => new SolidColorBrush(Color.Parse("#e74c3c")),
+        1 => new SolidColorBrush(Color.Parse("#3498db")),
+        2 => new SolidColorBrush(Color.Parse("#2ecc71")),
+        3 => new SolidColorBrush(Color.Parse("#e67e22")),
+        4 => new SolidColorBrush(Color.Parse("#f1c40f")),
+        5 => new SolidColorBrush(Color.Parse("#1abc9c")),
+        6 => new SolidColorBrush(Color.Parse("#9b59b6")),
+        7 => new SolidColorBrush(Color.Parse("#e91e63")),
+        8 => new SolidColorBrush(Color.Parse("#95a5a6")),
+        _ => new SolidColorBrush(Colors.White)
+    };
 
     private void ResetGrid()
     {
@@ -199,7 +175,7 @@ public class GameViewModel : ViewModelBase
         {
             SetSquareColor(i, GetOriginalColor(i));
             SetSquareText(i, "");
-            SetSquareOpacity(i, 0.3);
+            SetSquareOpacity(i, 0.5);
         }
     }
 
@@ -221,15 +197,9 @@ public class GameViewModel : ViewModelBase
             this.RaisePropertyChanged(nameof(IsGameGridVisible));
             CurrentPhaseText = "TADIDIO";
             StatusMessage = "Observation...";
-            
             await Task.Delay(1000, _gameCts.Token);
-            if (_gameCts.Token.IsCancellationRequested) return;
-            
             await _engine.PlaySequenceAsync();
-            
             await Task.Delay(500, _gameCts.Token);
-            if (_gameCts.Token.IsCancellationRequested) return;
-            
             CurrentPhase = GamePhase.Playing;
             this.RaisePropertyChanged(nameof(IsStartButtonVisible));
             this.RaisePropertyChanged(nameof(IsGameGridVisible));
@@ -242,36 +212,40 @@ public class GameViewModel : ViewModelBase
 
     private void HandleCorrectSquare(int id)
     {
-        // Change en vert clair et ajoute le texte positif
-        SetSquareColor(id, new SolidColorBrush(Color.Parse("#7bed9f"))); // Vert très clair
+        SetSquareColor(id, new SolidColorBrush(Color.Parse("#7bed9f")));
         SetSquareText(id, PosWords[Random.Shared.Next(PosWords.Length)]);
         SetSquareOpacity(id, 1.0);
 
         Task.Run(async () =>
         {
-            await Task.Delay(400); // Temps du feedback
-            // Restaure la case
-            SetSquareColor(id, GetOriginalColor(id));
-            SetSquareText(id, "");
-            SetSquareOpacity(id, 0.3);
+            await Task.Delay(1000); // Dissipation après 1 seconde
+            
+            // On force la mise à jour sur le thread principal de l'UI
+            Dispatcher.UIThread.Post(() =>
+            {
+                SetSquareColor(id, GetOriginalColor(id));
+                SetSquareText(id, "");
+                SetSquareOpacity(id, 0.5);
+            });
         });
     }
 
     private void HandleWrongSquare(int id)
     {
-        // Change en rouge clair et ajoute le texte négatif (reste affiché)
-        SetSquareColor(id, new SolidColorBrush(Color.Parse("#ff7675"))); // Rouge très clair
+        SetSquareColor(id, new SolidColorBrush(Color.Parse("#ff7675")));
         SetSquareText(id, NegWords[Random.Shared.Next(NegWords.Length)]);
         SetSquareOpacity(id, 1.0);
     }
 
     private void FlashSquare(int squareId)
     {
+        // Forcé sur le Thread de l'UI
+        Dispatcher.UIThread.Post(() => SetSquareOpacity(squareId, 1.0));
+
         Task.Run(async () =>
         {
-            SetSquareOpacity(squareId, 1.0);
-            await Task.Delay(350);
-            SetSquareOpacity(squareId, 0.3);
+            await Task.Delay(400);
+            Dispatcher.UIThread.Post(() => SetSquareOpacity(squareId, 0.5));
         });
     }
 
@@ -288,8 +262,6 @@ public class GameViewModel : ViewModelBase
         try
         {
             await Task.Delay(1000, _gameCts.Token);
-            if (_gameCts.Token.IsCancellationRequested) return;
-            
             ResetGrid();
             _engine.StartNewLevel();
             await ShowMemorizingPhaseAsync();
@@ -309,8 +281,6 @@ public class GameViewModel : ViewModelBase
         try
         {
             await Task.Delay(2000, _gameCts.Token);
-            if (_gameCts.Token.IsCancellationRequested) return;
-            
             var score = _engine.CurrentLevel - 1;
             var duration = DateTime.Now - _gameStartTime;
             CurrentPhase = GamePhase.Initial;
@@ -375,13 +345,16 @@ public class GameViewModel : ViewModelBase
             {
                 await Task.Delay(1000);
                 _timeRemaining--;
-                UpdateTimerDisplay();
+                // Mise à jour de l'UI depuis le thread en arrière plan
+                Dispatcher.UIThread.Post(() => UpdateTimerDisplay());
             }
-
             if (_timeRemaining <= 0 && !_timerCts.Token.IsCancellationRequested)
             {
-                StatusMessage = "Temps écoulé!";
-                _engine.TimeoutGame();
+                Dispatcher.UIThread.Post(() => 
+                {
+                    StatusMessage = "Temps écoulé!";
+                    _engine.TimeoutGame();
+                });
             }
         });
     }
@@ -392,15 +365,6 @@ public class GameViewModel : ViewModelBase
         this.RaisePropertyChanged(nameof(TimerColor));
     }
 
-    public void Cleanup()
-    {
-        _gameCts?.Cancel(); _gameCts?.Dispose();
-        _timerCts?.Cancel(); _timerCts?.Dispose();
-    }
-
-    ~GameViewModel()
-    {
-        _gameCts?.Cancel(); _gameCts?.Dispose();
-        _timerCts?.Cancel(); _timerCts?.Dispose();
-    }
+    public void Cleanup() { _gameCts?.Cancel(); _gameCts?.Dispose(); _timerCts?.Cancel(); _timerCts?.Dispose(); }
+    ~GameViewModel() { Cleanup(); }
 }

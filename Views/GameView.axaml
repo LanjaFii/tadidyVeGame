@@ -12,13 +12,18 @@
             <Setter Property="FontWeight" Value="Black"/>
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Grid>
+                    <Grid Opacity="{TemplateBinding Opacity}">
+                        <Grid.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.4"/>
+                            </Transitions>
+                        </Grid.Transitions>
+                        
                         <Border Background="{TemplateBinding Background}" 
-                                Opacity="{TemplateBinding Opacity}" 
                                 CornerRadius="{TemplateBinding CornerRadius}">
                             <Border.Transitions>
                                 <Transitions>
-                                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                                    <BrushTransition Property="Background" Duration="0:0:0.3"/>
                                 </Transitions>
                             </Border.Transitions>
                         </Border>
@@ -64,7 +69,7 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="TEMPS RESTANT" Foreground="#7f8c8d" FontSize="12" FontWeight="Bold" LetterSpacing="1" HorizontalAlignment="Center"/>
+                    <TextBlock Text="TEMPS" Foreground="#7f8c8d" FontSize="12" FontWeight="Bold" LetterSpacing="1" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding TimerText}" FontSize="32" FontWeight="Black" Foreground="{Binding TimerColor}" FontFamily="Courier New" HorizontalAlignment="Center"/>
                 </StackPanel>
                 
@@ -81,18 +86,17 @@
                 <Border DockPanel.Dock="Top" 
                         Background="{Binding StatusBackgroundColor}" 
                         CornerRadius="25" 
-                        Padding="30,12" 
+                        Padding="25,10" 
                         HorizontalAlignment="Center" 
-                        Margin="0,10,0,20">
+                        Margin="0,0,0,15">
                     <TextBlock Text="{Binding StatusMessage}" 
                                Foreground="{Binding StatusColor}" 
                                HorizontalAlignment="Center" 
-                               FontSize="20" FontWeight="Bold"/>
+                               FontSize="18" FontWeight="Bold"/>
                 </Border>
 
                 <Panel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    
-                    <Viewbox Stretch="Uniform" Width="550" Height="550">
+                    <Viewbox Stretch="Uniform" Width="480" Height="480">
                         <UniformGrid Rows="3" Columns="3" 
                                      IsVisible="{Binding IsGameGridVisible}"
                                      IsHitTestVisible="{Binding IsPlayerPhase}">
